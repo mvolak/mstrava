@@ -1,12 +1,3 @@
-// import Image from "next/image";
-
-// export default function Home() {
-//   return (
-    
-//   );
-// }
-
-
 // app/page.tsx
 import StravaConnect from '@/components/auth/strava-connect';
 
