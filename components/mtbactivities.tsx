@@ -46,7 +46,7 @@ const formatSpeed = (metersPerSecond: number): string => {
 const MtbActivities = ({ activities }: { activities: StravaActivity[] }) => {
   // Filter only MTB rides and take latest 3
   const mtbActivities = activities
-    .filter(activity => activity.type === 'Ride' || activity.type === 'MountainBikeRide')
+    // .filter(activity => activity.type === 'Ride' || activity.type === 'MountainBikeRide')
     .slice(0, 3);
 
   return (

@@ -5,6 +5,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { getValidStravaToken } from '@/lib/supabase';
 import StravaReconnect from '@/components/auth/strava-connect';
+import MtbActivities from '@/components/mtbactivities';
 
 
 export default async function Dashboard() {
@@ -14,38 +15,28 @@ export default async function Dashboard() {
       const accessToken = await getValidStravaToken(supabase);
   
       if (!accessToken) {
-        return (
-          <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">Connect to Strava</h1>
-            <p className="mb-4">Please connect your Strava account to view your activities</p>
-            <StravaReconnect />
-          </div>
-        );
+        // ... existing reconnect code ...
       }
   
-      const activities = await fetchActivities(accessToken);
+      // Fetch activities from Strava
+      const response = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=10', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch activities');
+      }
+  
+      const activities = await response.json();
   
       return (
-        <div className="p-8">
-          <h1 className="text-2xl font-bold mb-4">My Activities</h1>
-          <pre className="bg-gray-100 p-4 rounded-lg overflow-auto">
-            {JSON.stringify(activities, null, 2)}
-          </pre>
+        <div className="container mx-auto p-6">
+          <MtbActivities activities={activities} />
         </div>
       );
     } catch (error) {
-      console.error('Dashboard error:', error);
-      return (
-        <div className="p-8">
-          <h1 className="text-2xl font-bold mb-4">Error</h1>
-          <p className="mb-4">There was an error connecting to Strava. Please try reconnecting.</p>
-          <StravaReconnect />
-          {process.env.NODE_ENV === 'development' && (
-            <pre className="mt-4 p-4 bg-red-50 text-red-900 rounded">
-              {JSON.stringify(error, null, 2)}
-            </pre>
-          )}
-        </div>
-      );
+      // ... existing error handling ...
     }
   }
