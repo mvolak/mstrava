@@ -58,18 +58,50 @@ export const refreshStravaToken = async (refresh_token: string): Promise<StravaT
   return response.json();
 };
 
-export const fetchActivities = async (access_token: string) => {
-  const response = await fetch('https://www.strava.com/api/v3/athlete/activities', {
-    headers: {
-      'Authorization': `Bearer ${access_token}`,
-    },
+// export const fetchActivities = async (access_token: string) => {
+//   const response = await fetch('https://www.strava.com/api/v3/athlete/activities', {
+//     headers: {
+//       'Authorization': `Bearer ${access_token}`,
+//     },
+//   });
+
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch activities');
+//   }
+
+//   const activities = await response.json();
+//   console.log('Fetched activities:', activities);
+//   return activities;
+// };
+
+export async function fetchActivities(accessToken: string, params: {
+  before?: Date,
+  after?: Date,
+  perPage?: number
+} = {}) {
+  // Convert dates to Unix timestamps (seconds)
+  const beforeTimestamp = params.before ? Math.floor(params.before.getTime() / 1000) : undefined;
+  const afterTimestamp = params.after ? Math.floor(params.after.getTime() / 1000) : undefined;
+  
+  // Build the URL with query parameters
+  const queryParams = new URLSearchParams({
+    per_page: String(params.perPage || 30), // Default to 30 activities
+    ...(beforeTimestamp && { before: beforeTimestamp.toString() }),
+    ...(afterTimestamp && { after: afterTimestamp.toString() })
   });
+
+  const response = await fetch(
+    `https://www.strava.com/api/v3/athlete/activities?${queryParams}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch activities');
   }
 
-  const activities = await response.json();
-  console.log('Fetched activities:', activities);
-  return activities;
-};
+  return response.json();
+}

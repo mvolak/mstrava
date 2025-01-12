@@ -47,7 +47,8 @@ const MtbActivities = ({ activities }: { activities: StravaActivity[] }) => {
   // Filter only MTB rides and take latest 3
   const mtbActivities = activities
     // .filter(activity => activity.type === 'Ride' || activity.type === 'MountainBikeRide')
-    .slice(0, 3);
+    .filter(activity => activity.type === 'Run' )
+    .slice(0, 9);
 
   return (
     <div className="space-y-6">
