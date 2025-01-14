@@ -72,6 +72,7 @@ const DateRangeSelector = ({
       // For "All time", go back 5 years
       start.setFullYear(end.getFullYear() - 5);
     }
+    console.log('RangeSelect: ', start, '   ', end, '   ', label);
     onRangeChange({ start, end, label });
   };
 

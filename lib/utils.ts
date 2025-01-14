@@ -77,7 +77,8 @@ export const refreshStravaToken = async (refresh_token: string): Promise<StravaT
 export async function fetchActivities(accessToken: string, params: {
   before?: Date,
   after?: Date,
-  perPage?: number
+  perPage?: number,
+  activityType?: 'Run' | 'MountainBikeRide';
 } = {}) {
   // Convert dates to Unix timestamps (seconds)
   const beforeTimestamp = params.before ? Math.floor(params.before.getTime() / 1000) : undefined;
@@ -87,7 +88,8 @@ export async function fetchActivities(accessToken: string, params: {
   const queryParams = new URLSearchParams({
     per_page: String(params.perPage || 30), // Default to 30 activities
     ...(beforeTimestamp && { before: beforeTimestamp.toString() }),
-    ...(afterTimestamp && { after: afterTimestamp.toString() })
+    ...(afterTimestamp && { after: afterTimestamp.toString() }),
+    type: params.activityType || ''
   });
 
   const response = await fetch(
